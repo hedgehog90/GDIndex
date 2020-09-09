@@ -56,6 +56,19 @@
 								v-text="item.fileSize"
 							></v-list-item-subtitle>
 						</v-list-item-content>
+						<v-list-item-action v-if="!item.isFolder && !item.isGoogleFile">
+							<v-btn
+								icon
+								tag="a"
+								:href="getFileUrl(item.resourcePath)"
+								download
+								@click.stop
+							>
+								<v-icon color="black">
+									mdi-download
+								</v-icon>
+							</v-btn>
+						</v-list-item-action>
 						<v-list-item-action>
 							<v-btn
 								icon
@@ -66,20 +79,6 @@
 							>
 								<v-icon color="black">
 									mdi-eye
-								</v-icon>
-							</v-btn>
-						</v-list-item-action>
-						<v-list-item-action>
-							<v-btn
-								icon
-								v-if="!item.isFolder && !item.isGoogleFile"
-								tag="a"
-								:href="getFileUrl(item.resourcePath)"
-								download
-								@click.stop
-							>
-								<v-icon color="black">
-									mdi-download
 								</v-icon>
 							</v-btn>
 						</v-list-item-action>
@@ -231,9 +230,9 @@ export default {
 		},
 		getFileViewUrl(item) {
 			if (item.isFolder) {
-				return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`;
-			} else {
 				return `https://drive.google.com/drive/folders/${item.id}`;
+			} else {
+				return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`;
 			}
 		},
 		async renderPath(path, rootId) {
