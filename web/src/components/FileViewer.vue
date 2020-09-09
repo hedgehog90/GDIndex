@@ -58,13 +58,16 @@
 						</v-list-item-content>
 						<v-list-item-action>
 							<v-btn
+								icon
 								v-if="!item.isFolder && !item.isGoogleFile"
 								tag="a"
 								target='_blank'
 								:href="getFileViewUrl(item)"
 								@click.stop
 							>
-								View
+								<v-icon color="black">
+									mdi-preview
+								</v-icon>
 							</v-btn>
 						</v-list-item-action>
 						<v-list-item-action>
@@ -249,6 +252,11 @@ export default {
 				// User had initiated other folder navigation request
 				return
 			}
+
+			console.log("-------------------");
+			console.log(files);
+			console.log("-------------------");
+
 			this.list = files.map(f => {
 				f.mimeType = f.mimeType.replace('; charset=utf-8', '')
 				const isFolder =
