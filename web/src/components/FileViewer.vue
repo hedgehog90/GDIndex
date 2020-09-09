@@ -58,11 +58,11 @@
 						</v-list-item-content>
 						<v-list-item-action>
 							<v-btn
-								icon
 								v-if="!item.isFolder && !item.isGoogleFile"
 								tag="a"
 								target='_blank'
 								:href="getFileViewUrl(item)"
+								@click.stop
 							>
 								View
 							</v-btn>
@@ -257,6 +257,7 @@ export default {
 				const resourcePath =
 					nodeUrl.resolve(path, f.name) + (isFolder ? '/' : '')
 				const o = {
+					id: f.id,
 					fileName: f.name,
 					modifiedTime: format(
 						new Date(f.modifiedTime),
