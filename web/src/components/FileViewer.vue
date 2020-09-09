@@ -56,32 +56,6 @@
 								v-text="item.fileSize"
 							></v-list-item-subtitle>
 						</v-list-item-content>
-						<v-list-item-action>
-							<v-btn
-								icon
-								v-if="!item.isFolder && !item.isGoogleFile"
-								tag="a"
-								:href="getFileUrl(item.resourcePath)"
-								download
-								@click.stop
-							>
-								<v-icon color="black">
-									mdi-file-download
-								</v-icon>
-							</v-btn>
-							<v-btn
-								icon
-								v-if="!item.isFolder && !item.isGoogleFile"
-								tag="a"
-								:href="getFileUrl(item.resourcePath)"
-								download
-								@click.stop
-							>
-								<v-icon color="black">
-									mdi-file-download
-								</v-icon>
-							</v-btn>
-						</v-list-item-action>
 					</v-list-item>
 				</v-card>
 			</v-col>
