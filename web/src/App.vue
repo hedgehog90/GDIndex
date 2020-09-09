@@ -84,7 +84,9 @@ export default {
 				}))
 		if (!ok) return
 
-		const { drives } = await api.get('/~_~_gdindex/drives').json()
+		console.log(await api.get('/~_~_gdindex/drives'));
+		
+		const { drives } = (await api.get('/~_~_gdindex/drives')).json()
 
 		console.log(drives);
 
