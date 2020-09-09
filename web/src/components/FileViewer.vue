@@ -56,6 +56,31 @@
 								v-text="item.fileSize"
 							></v-list-item-subtitle>
 						</v-list-item-content>
+						<v-list-item-action>
+							<v-btn
+								icon
+								v-if="!item.isFolder && !item.isGoogleFile"
+								tag="a"
+								target='_blank'
+								:href="getFileViewUrl(item)"
+							>
+								View
+							</v-btn>
+						</v-list-item-action>
+						<v-list-item-action>
+							<v-btn
+								icon
+								v-if="!item.isFolder && !item.isGoogleFile"
+								tag="a"
+								:href="getFileUrl(item.resourcePath)"
+								download
+								@click.stop
+							>
+								<v-icon color="black">
+									mdi-file-download
+								</v-icon>
+							</v-btn>
+						</v-list-item-action>
 					</v-list-item>
 				</v-card>
 			</v-col>
@@ -201,6 +226,9 @@ export default {
 				u += '?rootId=' + rootId
 			}
 			return u
+		},
+		getFileViewUrl(item) {
+			return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`
 		},
 		async renderPath(path, rootId) {
 			let renderStart = (this.renderStart = Date.now()) // Withous this, when user regret navigating a big folder, it will have some conflict.
