@@ -69,12 +69,12 @@
 								</v-icon>
 							</v-btn>
 						</v-list-item-action>
-						<v-list-item-action>
+						<v-list-item-action v-if="item.url">
 							<v-btn
 								icon
 								tag="a"
 								target='_blank'
-								:href="getFileViewUrl(item)"
+								:href="item.url"
 								@click.stop
 							>
 								<v-icon color="black">
@@ -228,13 +228,13 @@ export default {
 			}
 			return u
 		},
-		getFileViewUrl(item) {
+		/* getFileViewUrl(item) {
 			if (item.isFolder) {
 				return `https://drive.google.com/drive/folders/${item.id}`;
 			} else {
 				return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`;
 			}
-		},
+		}, */
 		async renderPath(path, rootId) {
 			let renderStart = (this.renderStart = Date.now()) // Withous this, when user regret navigating a big folder, it will have some conflict.
 			this.loading = true
@@ -268,7 +268,6 @@ export default {
 					nodeUrl.resolve(path, f.name) + (isFolder ? '/' : '')
 				const o = {
 					id: f.id,
-					shared: f.shared,
 					fileName: f.name,
 					modifiedTime: format(
 						new Date(f.modifiedTime),
@@ -279,6 +278,7 @@ export default {
 					mimeType: f.mimeType,
 					fileSize: f.size ? prettyBytes(parseInt(f.size)) : '',
 					resourcePath,
+					url: f.webViewLink || f.webContentLink,
 					icon: ICON_NAME[f.mimeType] || 'mdi-file'
 				}
 				if (f.mimeType in SUPPORTED_TYPES) {
