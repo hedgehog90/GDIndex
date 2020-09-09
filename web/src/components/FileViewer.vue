@@ -257,7 +257,6 @@ export default {
 
 			console.log("-------------------");
 			console.log(files);
-			console.log("-------------------");
 
 			this.list = files.map(f => {
 				f.mimeType = f.mimeType.replace('; charset=utf-8', '')
