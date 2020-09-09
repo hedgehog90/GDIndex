@@ -13,7 +13,7 @@
 					<template v-slot:activator="{ on }">
 						<v-btn text v-on="on" class="text-none">
 							<v-icon>mdi-cloud</v-icon>&nbsp;{{
-								currentDrive.text
+								drives.length ? currentDrive.text : "Root"
 							}}<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
 					</template>
