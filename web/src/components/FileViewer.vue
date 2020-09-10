@@ -1,19 +1,5 @@
 <template>
 	<v-container fluid>
-		<!-- <portal to="navbar">
-			<v-toolbar-items>
-				<template v-for="seg in pathSegments">
-					<v-icon :key="seg.path + '-icon'">mdi-menu-right</v-icon>
-					<v-btn
-						text
-						class="text-none"
-						:key="seg.path + '-btn'"
-						@click="goPath(seg.path)"
-						>{{ seg.name }}</v-btn
-					>
-				</template>
-			</v-toolbar-items>
-		</portal> -->
 		<FileUploadDialog
 			v-model="showUploadDialog"
 			:uploadUrl="uploadUrl"
@@ -106,19 +92,8 @@ import prettyBytes from 'pretty-bytes'
 import nodeUrl from 'url'
 import nodePath from 'path'
 import api from '../api'
-import ImageViewer from 'viewerjs'
-import 'viewerjs/dist/viewer.css'
 import FileUploadDialog from './FileUploadDialog'
 
-const SUPPORTED_TYPES = {
-	'application/epub+zip': 'epub',
-	'video/mp4': 'video',
-	'image/png': 'image',
-	'image/jpeg': 'image',
-	'image/gif': 'image',
-	'image/bmp': 'image',
-	'application/pdf': 'pdf'
-}
 const ICON_NAME = {
 	'application/vnd.google-apps.folder': 'mdi-folder',
 	'application/epub+zip': 'mdi-book',
@@ -183,11 +158,8 @@ export default {
 		}
 	},
 	computed: {
-		path() {
-			return '/' + this.$route.params.path
-		},
 		uploadUrl() {
-			const u = new URL(this.path, window.props.api)
+			const u = new URL("/", window.props.api)
 			u.searchParams.set(
 				'rootId',
 				this.$route.query.rootId || window.props.default_root_id
@@ -199,17 +171,17 @@ export default {
 		}
 	},
 	methods: {
-		getFileUrl(item, parent=false) {
-			const { rootId } = this.$route.query
-			var params = {};
+		getFileUrl(item, parent=null) {
+			if (parent == null) parent = file.isParent;
+			var url = new URL("/")
 			if (item.opener) {
-				params.opener = item.opener
+				url.searchParams.set("opener", item.opener)
 			}
-			if (rootId) {
-				params.rootId = rootId;
+			if (this.$route.query.rootId) {
+				url.searchParams.set("rootId", this.$route.query.rootId)
 			}
-			params.id = parent ? item.parents[0] : item.id;
-			return "/?"+Object.entries(params).map(e=>`${e[0]}=${e[1]}`).join("&");
+			url.searchParams.set("id", parent ? item.parents[0] : item.id)
+			return url.href;
 		},
 		/* getFileViewUrl(item) {
 			if (item.isFolder) {
@@ -218,7 +190,10 @@ export default {
 				return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`;
 			}
 		}, */
-		async renderPath(path, query) {
+		async load() {
+
+			var query = this.$route.query;
+
 			let renderStart = (this.renderStart = Date.now()) // Withous this, when user regret navigating a big folder, it will have some conflict.
 			this.loading = true
 
@@ -229,7 +204,7 @@ export default {
 			if (query.q) qs.q = query.q;
 			if (query.id) qs.id = query.id;
 			const { files } = await api
-				.post(path, {
+				.post("/", {
 					method: 'POST',
 					qs
 				})
@@ -239,16 +214,11 @@ export default {
 				return
 			}
 
-			console.log("-------------------");
-			console.log(files);
-
 			this.list = files.filter(f => !f.description || !f.description.includes("[[hidden]]")).map(f => {
 				f.mimeType = f.mimeType.replace('; charset=utf-8', '')
 				const isFolder =
 					f.mimeType === 'application/vnd.google-apps.folder'
 				const isGoogleFile = f.mimeType.includes('vnd.google-apps')
-				const resourcePath =
-					nodeUrl.resolve(path, f.name) + (isFolder ? '/' : '')
 				const o = {
 					id: f.id,
 					isParent: !!f.isParent,
@@ -261,71 +231,28 @@ export default {
 					isGoogleFile,
 					mimeType: f.mimeType,
 					fileSize: f.size ? prettyBytes(parseInt(f.size)) : '',
-					resourcePath,
 					url: f.webViewLink || f.webContentLink,
 					icon: ICON_NAME[f.mimeType] || 'mdi-file'
-				}
-				if (f.mimeType in SUPPORTED_TYPES) {
-					o.opener = SUPPORTED_TYPES[f.mimeType]
 				}
 				return o
 			})
 			this.loading = false
 		},
-		handlePath(path, query) {
-			if (path.substr(-1) === '/') {
-				this.renderPath(path, query)
-				return true
-			} else {
-				let u = nodeUrl.resolve(window.props.api, path)
-				//if (Math.random() < 10) return
-				if (
-					query.rootId &&
-					query.rootId !== window.props.default_root_id
-				) {
-					u += '?rootId=' + query.rootId
-				}
-				if (query.opener) {
-					if (query.opener === 'image') {
-						const img = new Image()
-						img.src = u
-						img.style.display = 'none'
-						document.body.appendChild(img)
-						img.onload = () => {
-							const viewer = new ImageViewer(img)
-							viewer.show()
-							img.addEventListener('hide', () => {
-								viewer.destroy()
-								img.remove()
-							})
-						}
-
-						return
-					}
-					this.$router.push({
-						path: '/~viewer/' + query.opener,
-						query: { urlBase64: btoa(u) }
-					})
-				} else {
-					location.href = u
-				}
-			}
-		},
 		uploadComplete() {
 			this.showUploadDialog = false
-			this.renderPath(this.path, this.$route.query)
+			this.load()
 		}
 	},
 	created() {
-		this.handlePath(this.path, this.$route.query)
+		this.load()
 	},
 	beforeRouteUpdate(to, from, next) {
-		const fullyEncoded = to.params.path
+		/* const fullyEncoded = to.params.path
 			.split('/')
 			.map(decodeURIComponent)
 			.map(encodeURIComponent)
-			.join('/') // because vue-router's encoding is a little bit weird...
-		if (this.handlePath('/' + fullyEncoded, to.query)) {
+			.join('/') // because vue-router's encoding is a little bit weird... */
+		if (this.load()) {
 			next()
 		}
 	},
