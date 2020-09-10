@@ -222,6 +222,7 @@ export default {
 				rootId: query.rootId || window.props.default_root_id,
 			}
 			if (query.q) qs.q = query.q;
+			if (query.id) q.id = query.id;
 			const { files } = await api
 				.post(path, {
 					method: 'POST',
