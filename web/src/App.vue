@@ -13,7 +13,7 @@
 					<template v-slot:activator="{ on }">
 						<v-btn text v-on="on" class="text-none">
 							<v-icon>mdi-cloud</v-icon>&nbsp;{{
-								currentDrive.text
+								currentDrive ? currentDrive.text : "Unspecified Drive"
 							}}<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
 					</template>
@@ -83,7 +83,6 @@ export default {
 					}
 				}))
 		if (!ok) return
-
 		const { drives } = await api.get('/~_~_gdindex/drives').json()
 		this.drives = [{ text: this.$t('mainDrive'), value: 'root' }]
 		.concat(
