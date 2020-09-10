@@ -239,14 +239,15 @@ export default {
 			let renderStart = (this.renderStart = Date.now()) // Withous this, when user regret navigating a big folder, it will have some conflict.
 			this.loading = true
 
-			this.list = []
+			this.list = [];
+			var qs = {
+				rootId: query.rootId || window.props.default_root_id,
+			}
+			if (query.q) qs.q = query.q;
 			const { files } = await api
 				.post(path, {
 					method: 'POST',
-					qs: {
-						rootId: query.rootId || window.props.default_root_id,
-						q: query.q
-					}
+					qs
 				})
 				.json()
 			if (renderStart !== this.renderStart) {

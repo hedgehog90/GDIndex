@@ -1,3 +1,13 @@
 .pointer {
 	cursor: pointer;
 }
+.search-form {
+	display: flex;
+    align-items: center;
+}
+
+.search-form input {
+	background: rgba(255,255,255,0.2);
+    padding: 5px 10px;
+	border-radius: 5px;
+}

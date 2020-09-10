@@ -35,7 +35,7 @@
 			<v-toolbar-items>
 				<form class="search-form" @submit.prevent="search">
 					<div class="form-group">
-						<input type="text" class="form-control" v-model="term" placeholder="Search">
+						<input type="text" class="form-control" v-model="term" ref="search_input" placeholder="Search">
 					</div>
 				</form>
 
@@ -110,6 +110,10 @@ export default {
 				return // vue-router forbid going to same location
 			}
 			this.$router.push({ path: '/', query: { rootId } })
+		},
+		search() {
+			var rootId = this.$route.query.rootId || window.props.default_root_id;
+			this.$router.push({ path: '/', query: { rootId, q: this.$refs.search_input.value } });
 		}
 	},
 	components: { LoginDialog }
