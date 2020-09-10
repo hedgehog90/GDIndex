@@ -4,7 +4,7 @@
 			<v-toolbar-items
 				class="dir-title-wrapper"
 			>
-				<v-icon>mdi-menu-right</v-icon>
+				<!-- <v-icon>mdi-menu-right</v-icon> -->
 				<span>{{ dirTitle }}</span>
 			</v-toolbar-items>
 		</portal>
