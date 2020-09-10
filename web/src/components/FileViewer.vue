@@ -35,7 +35,8 @@
 						class="pl-0"
 						tag="a"
 						:href="getFileUrl(item)"
-						@click.stop
+						@click.prevent="goPath(item)"
+
 					>
 						<v-list-item-avatar class="ma-0">
 							<v-icon>{{ item.icon }}</v-icon>
@@ -68,7 +69,7 @@
 								tag="a"
 								target='_blank'
 								:href="item.url"
-								@click.stop
+								@click.prevent="goPath(item)"
 							>
 								<v-icon color="black">
 									mdi-eye
@@ -80,7 +81,7 @@
 								icon
 								tag="a"
 								:href="getFileUrl(item, true)"
-								@click.stop
+								@click.prevent="goPath(item)"
 							>
 								<v-icon color="black">
 									mdi-folder
@@ -189,17 +190,30 @@ export default {
 		}
 	},
 	methods: {
-		getFileUrl(item, parent=null) {
+		getQuery(item, parent=null) {
 			if (parent == null) parent = item.isParent;
-			var url = new URL("/", window.props.api);
-			
+			var qs = {
+				id: parent ? item.parents[0] : item.id
+			};
 			if (item.mimeType != FOLDER_MIME_TYPE && !parent) {
-				url.searchParams.set("view", 1);
+				qs.view = 1;
 			}
 			if (this.$route.query.rootId) {
-				url.searchParams.set("rootId", this.$route.query.rootId)
+				qs.rootId = this.$route.query.rootId;
 			}
-			url.searchParams.set("id", parent ? item.parents[0] : item.id)
+			return qs;
+		},
+		goPath(item, parent=null) {
+			this.$router.push({
+				path: "/",
+				query: this.getQuery(item, parent=null)
+			})
+		},
+		getFileUrl(item, parent=null) {
+			var url = new URL("/", window.props.api);
+			for (var [k,v] of Object.entries(this.getQuery(item, parent))) {
+				url.searchParams.set(k,v);
+			}
 			return url.href;
 		},
 		/* getFileViewUrl(item) {
