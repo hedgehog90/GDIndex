@@ -217,7 +217,10 @@ export default {
 				return
 			}
 
-			this.list = files.filter(f => !f.description || !f.description.includes("[[hidden]]")).map(f => {
+			this.list = files
+			.filter(f => !f.description || !f.description.includes("[[hidden]]"))
+			.filter(f=> !f.isParent || f.parents)
+			.map(f => {
 				f.mimeType = f.mimeType.replace('; charset=utf-8', '')
 				const isFolder =
 					f.mimeType === 'application/vnd.google-apps.folder'
