@@ -30,7 +30,7 @@
 					</v-list>
 				</v-menu>
 			</v-toolbar-items>
-			<portal-target name="navbar" slim />
+			<!-- <portal-target name="navbar" slim /> -->
 			<v-spacer />
 			<v-toolbar-items>
 				<form class="search-form" @submit.prevent="search">

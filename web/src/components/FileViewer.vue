@@ -1,6 +1,6 @@
 <template>
 	<v-container fluid>
-		<portal to="navbar">
+		<!-- <portal to="navbar">
 			<v-toolbar-items>
 				<template v-for="seg in pathSegments">
 					<v-icon :key="seg.path + '-icon'">mdi-menu-right</v-icon>
@@ -13,7 +13,7 @@
 					>
 				</template>
 			</v-toolbar-items>
-		</portal>
+		</portal> -->
 		<FileUploadDialog
 			v-model="showUploadDialog"
 			:uploadUrl="uploadUrl"
@@ -39,10 +39,10 @@
 					<v-list-item
 						v-for="item in list"
 						:key="item.id"
-						@click.prevent="goPath(item.resourcePath, item.opener)"
+						@click.prevent="goPath(item)"
 						class="pl-0"
 						tag="a"
-						:href="getFileUrl(item.resourcePath)"
+						:href="getFileUrl(item)"
 					>
 						<v-list-item-avatar class="ma-0">
 							<v-icon>{{ item.icon }}</v-icon>
@@ -60,7 +60,7 @@
 							<v-btn
 								icon
 								tag="a"
-								:href="getFileUrl(item.resourcePath)"
+								:href="getFileUrl(item)"
 								download
 								@click.stop
 							>
@@ -174,20 +174,6 @@ export default {
 		path() {
 			return '/' + this.$route.params.path
 		},
-		pathSegments() {
-			const list = this.path
-				.split('/')
-				.filter(Boolean)
-				.map(decodeURIComponent)
-			const ar = []
-			for (let i = 0; i < list.length; i++) {
-				ar.push({
-					name: list[i],
-					path: '/' + nodePath.join(...list.slice(0, i + 1)) + '/'
-				})
-			}
-			return ar
-		},
 		uploadUrl() {
 			const u = new URL(this.path, window.props.api)
 			u.searchParams.set(
@@ -198,35 +184,27 @@ export default {
 		}
 	},
 	methods: {
-		goPath(path, opener) {
+		goPath(item) {
 			const query = {
 				rootId: this.$route.query.rootId
 			}
-			if (opener) {
+			query.id = item.id
+			if (item.opener) {
 				query.opener = opener
 			}
 			this.$router.push({
-				path: path
-					.split('/')
-					.map(decodeURIComponent)
-					.map(encodeURIComponent)
-					.join('/'),
+				path: "/",
 				query
 			})
 		},
-		getFileUrl(path) {
+		getFileUrl(item) {
 			const { rootId } = this.$route.query
-			let u = nodeUrl.resolve(
-				window.props.api,
-				path
-					.split('/')
-					.map(encodeURIComponent)
-					.join('/')
-			)
+			var params = {};
 			if (rootId) {
-				u += '?rootId=' + rootId
+				params.rootId = rootId;
 			}
-			return u
+			params["id"] = item.id;
+			return "/?"+params.entries().map(e=>`${e[0]}=${e[1]}`).join("&");
 		},
 		/* getFileViewUrl(item) {
 			if (item.isFolder) {
