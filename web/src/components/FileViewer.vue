@@ -174,7 +174,7 @@ export default {
 	},
 	methods: {
 		getFileUrl(item, parent=null) {
-			if (parent == null) parent = file.isParent;
+			if (parent == null) parent = item.isParent;
 			var url = new URL("/")
 			
 			if (item.mimeType != FOLDER_MIME_TYPE) {
