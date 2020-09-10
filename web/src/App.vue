@@ -33,7 +33,13 @@
 			<portal-target name="navbar" slim />
 			<v-spacer />
 			<v-toolbar-items>
-				<v-btn
+				<form class="search-form" @submit.prevent="search">
+					<div class="form-group">
+						<input type="text" class="form-control" v-model="term" placeholder="Search">
+					</div>
+				</form>
+
+				<!-- <v-btn
 					text
 					class="text-none hidden-sm-and-down"
 					tag="a"
@@ -41,7 +47,7 @@
 					target="_blank"
 				>
 					<v-icon>mdi-github-circle</v-icon>&nbsp;GitHub</v-btn
-				>
+				> -->
 			</v-toolbar-items>
 		</v-app-bar>
 

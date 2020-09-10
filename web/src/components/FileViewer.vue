@@ -235,18 +235,17 @@ export default {
 				return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`;
 			}
 		}, */
-		async renderPath(path, rootId) {
+		async renderPath(path, query) {
 			let renderStart = (this.renderStart = Date.now()) // Withous this, when user regret navigating a big folder, it will have some conflict.
 			this.loading = true
-			if (!rootId) {
-				rootId = window.props.default_root_id
-			}
+
 			this.list = []
 			const { files } = await api
 				.post(path, {
 					method: 'POST',
 					qs: {
-						rootId
+						rootId: query.rootId || window.props.default_root_id,
+						q: query.q
 					}
 				})
 				.json()
@@ -289,7 +288,7 @@ export default {
 		},
 		handlePath(path, query) {
 			if (path.substr(-1) === '/') {
-				this.renderPath(path, query.rootId)
+				this.renderPath(path, query)
 				return true
 			} else {
 				let u = nodeUrl.resolve(window.props.api, path)
@@ -328,7 +327,7 @@ export default {
 		},
 		uploadComplete() {
 			this.showUploadDialog = false
-			this.renderPath(this.path, this.$route.query.rootId)
+			this.renderPath(this.path, this.$route.query)
 		}
 	},
 	created() {
