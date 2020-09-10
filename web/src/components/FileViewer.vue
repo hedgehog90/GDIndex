@@ -223,9 +223,9 @@ export default {
 				return `https://drive.google.com/file/d/${item.id}/view?usp=sharing`;
 			}
 		}, */
-		async load() {
+		async load(query=null) {
 
-			var query = this.$route.query;
+			if (!query) query = this.$route.query;
 
 			let renderStart = (this.renderStart = Date.now()) // Withous this, when user regret navigating a big folder, it will have some conflict.
 			this.loading = true
@@ -287,13 +287,9 @@ export default {
 		this.load()
 	},
 	beforeRouteUpdate(to, from, next) {
-		/* const fullyEncoded = to.params.path
-			.split('/')
-			.map(decodeURIComponent)
-			.map(encodeURIComponent)
-			.join('/') // because vue-router's encoding is a little bit weird... */
-		next()
-		this.load();
+		if (this.load(to.query)) {
+			next();
+		}
 	},
 	components: {
 		FileUploadDialog
