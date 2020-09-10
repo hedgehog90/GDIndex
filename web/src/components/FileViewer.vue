@@ -181,7 +181,11 @@ export default {
 			return !!this.$route.query.q;
 		},
 		dirTitle() {
-			return this.isSearch ? `Search Results for '${this.$route.query.q}'` : this.dir.name;
+			if (this.isSearch)
+				return `Search Results for '${this.$route.query.q}'`;
+			if (this.dir)
+				return this.dir.name;
+			return "";
 		}
 	},
 	methods: {
