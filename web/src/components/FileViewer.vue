@@ -1,10 +1,11 @@
 <template>
 	<v-container fluid>
 		<portal to="navbar">
-			<v-toolbar-items>
+			<v-toolbar-items
+				class="dir-title-wrapper"
+			>
 				<v-icon>mdi-menu-right</v-icon>
-				<v-label>{{ title }}</v-label
-				>
+				<span>{{ dirTitle }}</span>
 			</v-toolbar-items>
 		</portal>
 		<FileUploadDialog
@@ -140,6 +141,8 @@ export default {
 	data() {
 		return {
 			list: [],
+			files: [],
+			dir: null,
 			loading: false,
 			headers: [
 				{
@@ -177,8 +180,8 @@ export default {
 		isSearch() {
 			return !!this.$route.query.q;
 		},
-		title() {
-			return this.isSearch ? `Search Results for '${this.$route.query.q}'` : this.$route.query.id
+		dirTitle() {
+			return this.isSearch ? `Search Results for '${this.$route.query.q}'` : this.dir.name;
 		}
 	},
 	methods: {
@@ -226,6 +229,9 @@ export default {
 				return
 			}
 
+			this.files = files;
+			this.dir = files[0];
+
 			this.list = files
 			.filter(f => !f.description || !f.description.includes("[[hidden]]"))
 			.filter(f=> !f.isParent || f.parents)
@@ -251,13 +257,13 @@ export default {
 					icon: ICON_NAME[f.mimeType] || 'mdi-file'
 				}
 				return o
-			})
+			});
 			this.loading = false
 		},
 		uploadComplete() {
 			this.showUploadDialog = false
 			this.load()
-		}
+		},
 	},
 	created() {
 		this.load()
