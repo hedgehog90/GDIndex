@@ -94,6 +94,8 @@ import nodePath from 'path'
 import api from '../api'
 import FileUploadDialog from './FileUploadDialog'
 
+const FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
+
 const ICON_NAME = {
 	'application/vnd.google-apps.folder': 'mdi-folder',
 	'application/epub+zip': 'mdi-book',
@@ -174,8 +176,9 @@ export default {
 		getFileUrl(item, parent=null) {
 			if (parent == null) parent = file.isParent;
 			var url = new URL("/")
-			if (item.opener) {
-				url.searchParams.set("opener", item.opener)
+			
+			if (item.mimeType != FOLDER_MIME_TYPE) {
+				url.searchParams.set("view",1);
 			}
 			if (this.$route.query.rootId) {
 				url.searchParams.set("rootId", this.$route.query.rootId)
