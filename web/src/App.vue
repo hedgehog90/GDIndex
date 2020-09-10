@@ -9,11 +9,11 @@
 				>
 			</v-toolbar-title>
 			<v-toolbar-items>
-				<v-menu offset-y v-if="drives.length > 1">
+				<v-menu offset-y>
 					<template v-slot:activator="{ on }">
 						<v-btn text v-on="on" class="text-none">
 							<v-icon>mdi-cloud</v-icon>&nbsp;{{
-								currentDrive ? currentDrive.text : "/"
+								currentDrive.text
 							}}<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
 					</template>
