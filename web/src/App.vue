@@ -9,7 +9,7 @@
 				>
 			</v-toolbar-title>
 			<v-toolbar-items>
-				<v-menu offset-y>
+				<v-menu offset-y v-if="drives.length">
 					<template v-slot:activator="{ on }">
 						<v-btn text v-on="on" class="text-none">
 							<v-icon>mdi-cloud</v-icon>&nbsp;{{
