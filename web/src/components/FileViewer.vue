@@ -175,7 +175,7 @@ export default {
 	methods: {
 		getFileUrl(item, parent=null) {
 			if (parent == null) parent = item.isParent;
-			var url = new URL("/")
+			var url = new URL("/", window.props.api);
 			
 			if (item.mimeType != FOLDER_MIME_TYPE) {
 				url.searchParams.set("view",1);
