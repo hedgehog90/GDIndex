@@ -39,17 +39,17 @@
 					<v-list-item
 						v-for="item in list"
 						:key="item.id"
-						@click.prevent="goPath(item)"
 						class="pl-0"
 						tag="a"
 						:href="getFileUrl(item)"
+						@click.stop
 					>
 						<v-list-item-avatar class="ma-0">
 							<v-icon>{{ item.icon }}</v-icon>
 						</v-list-item-avatar>
 						<v-list-item-content class="py-2">
 							<v-list-item-title
-								v-text="item.fileName"
+								v-text="item.isParent ? '..' : item.fileName"
 							></v-list-item-title>
 							<v-list-item-subtitle
 								v-if="!item.isFolder"
@@ -69,7 +69,7 @@
 								</v-icon>
 							</v-btn>
 						</v-list-item-action>
-						<v-list-item-action v-if="item.url">
+						<v-list-item-action v-if="!item.isParent && item.url">
 							<v-btn
 								icon
 								tag="a"
@@ -79,6 +79,18 @@
 							>
 								<v-icon color="black">
 									mdi-eye
+								</v-icon>
+							</v-btn>
+						</v-list-item-action>
+						<v-list-item-action v-if="isSearch">
+							<v-btn
+								icon
+								tag="a"
+								:href="getFileUrl(item, true)"
+								@click.stop
+							>
+								<v-icon color="black">
+									mdi-folder
 								</v-icon>
 							</v-btn>
 						</v-list-item-action>
@@ -181,29 +193,22 @@ export default {
 				this.$route.query.rootId || window.props.default_root_id
 			)
 			return u.href
+		},
+		isSearch() {
+			return !!this.$route.params.q;
 		}
 	},
 	methods: {
-		goPath(item) {
-			const query = {
-				rootId: this.$route.query.rootId
-			}
-			query.id = item.id
-			if (item.opener) {
-				query.opener = opener
-			}
-			this.$router.push({
-				path: "/",
-				query
-			})
-		},
-		getFileUrl(item) {
+		getFileUrl(item, parent=false) {
 			const { rootId } = this.$route.query
 			var params = {};
+			if (item.opener) {
+				params.opener = item.opener
+			}
 			if (rootId) {
 				params.rootId = rootId;
 			}
-			params["id"] = item.id;
+			params.id = parent ? item.parents[0] : item.id;
 			return "/?"+Object.entries(params).map(e=>`${e[0]}=${e[1]}`).join("&");
 		},
 		/* getFileViewUrl(item) {
@@ -246,6 +251,7 @@ export default {
 					nodeUrl.resolve(path, f.name) + (isFolder ? '/' : '')
 				const o = {
 					id: f.id,
+					isParent: !!f.isParent,
 					fileName: f.name,
 					modifiedTime: format(
 						new Date(f.modifiedTime),
