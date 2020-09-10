@@ -1,5 +1,12 @@
 <template>
 	<v-container fluid>
+		<portal to="navbar">
+			<v-toolbar-items>
+				<v-icon>mdi-menu-right</v-icon>
+				<v-label>{{ title }}</v-label
+				>
+			</v-toolbar-items>
+		</portal>
 		<FileUploadDialog
 			v-model="showUploadDialog"
 			:uploadUrl="uploadUrl"
@@ -18,7 +25,6 @@
 			<v-col md="8" lg="6">
 				<v-card
 					class="mx-auto"
-					min-height="400px"
 					tile
 					:loading="loading"
 				>
@@ -169,7 +175,10 @@ export default {
 			return u.href
 		},
 		isSearch() {
-			return !!this.$route.params.q;
+			return !!this.$route.query.q;
+		},
+		title() {
+			return this.isSearch ? `Search Results for '${this.$route.query.q}'` : this.$route.query.id
 		}
 	},
 	methods: {
