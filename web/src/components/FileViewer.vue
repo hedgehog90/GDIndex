@@ -259,9 +259,8 @@ export default {
 			.map(decodeURIComponent)
 			.map(encodeURIComponent)
 			.join('/') // because vue-router's encoding is a little bit weird... */
-		if (this.load()) {
-			next()
-		}
+		next()
+		this.load();
 	},
 	components: {
 		FileUploadDialog
