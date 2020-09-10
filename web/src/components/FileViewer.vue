@@ -26,6 +26,7 @@
 			<v-col md="8" lg="6">
 				<v-card
 					class="mx-auto"
+					min-height="48px"
 					tile
 					:loading="loading"
 				>
@@ -242,6 +243,7 @@ export default {
 					qs
 				})
 				.json()
+
 			if (renderStart !== this.renderStart) {
 				// User had initiated other folder navigation request
 				return
