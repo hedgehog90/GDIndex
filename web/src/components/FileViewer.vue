@@ -193,8 +193,8 @@ export default {
 			if (parent == null) parent = item.isParent;
 			var url = new URL("/", window.props.api);
 			
-			if (item.mimeType != FOLDER_MIME_TYPE) {
-				url.searchParams.set("view",1);
+			if (item.mimeType != FOLDER_MIME_TYPE && !parent) {
+				url.searchParams.set("view", 1);
 			}
 			if (this.$route.query.rootId) {
 				url.searchParams.set("rootId", this.$route.query.rootId)

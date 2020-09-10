@@ -19,3 +19,7 @@
 	align-items: center;
 	color: white;
 }
+.pl-0 .v-list-item__action {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
