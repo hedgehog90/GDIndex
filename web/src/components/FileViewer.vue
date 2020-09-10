@@ -204,7 +204,7 @@ export default {
 				params.rootId = rootId;
 			}
 			params["id"] = item.id;
-			return "/?"+params.entries().map(e=>`${e[0]}=${e[1]}`).join("&");
+			return "/?"+Object.entries(params).map(e=>`${e[0]}=${e[1]}`).join("&");
 		},
 		/* getFileViewUrl(item) {
 			if (item.isFolder) {
