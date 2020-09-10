@@ -224,6 +224,7 @@ export default {
 				const isGoogleFile = f.mimeType.includes('vnd.google-apps')
 				const o = {
 					id: f.id,
+					parents: f.parents,
 					isParent: !!f.isParent,
 					fileName: f.name,
 					modifiedTime: format(
