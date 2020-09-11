@@ -207,7 +207,7 @@ export default {
 		goPath(item, parent=null) {
 			this.$router.push({
 				path: "/",
-				query: this.getQuery(item, parent=null)
+				query: this.getQuery(item, parent)
 			})
 		},
 		getFileUrl(item, parent=null) {
