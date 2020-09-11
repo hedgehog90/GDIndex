@@ -70,7 +70,7 @@
 								tag="a"
 								target='_blank'
 								:href="item.url"
-								@click.prevent="goPath(item)"
+								@click.stop
 							>
 								<v-icon color="black">
 									mdi-eye
@@ -82,7 +82,7 @@
 								icon
 								tag="a"
 								:href="getFileUrl(item, true)"
-								@click.prevent="goPath(item)"
+								@click.prevent="goPath(item, true)"
 							>
 								<v-icon color="black">
 									mdi-folder
