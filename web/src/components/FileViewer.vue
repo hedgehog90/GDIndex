@@ -36,7 +36,7 @@
 						class="pl-0"
 						tag="a"
 						:href="getItemUrl(item)"
-						@click="onClickItem"
+						@click="onClickItem(item, $event)"
 					>
 						<v-list-item-avatar class="ma-0">
 							<v-icon>{{ item.icon }}</v-icon>
@@ -190,7 +190,7 @@ export default {
 		}
 	},
 	methods: {
-		onClickItem(e) {
+		onClickItem(item, e) {
 			var r = this.getRoute(item);
 			if (!r.preview) {
 				this.$router.push(r);
