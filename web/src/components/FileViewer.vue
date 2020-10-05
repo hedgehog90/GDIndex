@@ -35,8 +35,8 @@
 						:key="item.id"
 						class="pl-0"
 						tag="a"
-						:href="this.getItemUrl(item)"
-						@click="this.onClickItem"
+						:href="getItemUrl(item)"
+						@click="onClickItem"
 					>
 						<v-list-item-avatar class="ma-0">
 							<v-icon>{{ item.icon }}</v-icon>
@@ -54,7 +54,7 @@
 							<v-btn
 								icon
 								tag="a"
-								:href="this.routeToHref(this.getRoute(item, true))"
+								:href="routeToHref(getRoute(item, true))"
 								download
 								@click.stop
 							>
@@ -80,8 +80,8 @@
 							<v-btn
 								icon
 								tag="a"
-								:href="this.routeToHref(this.getRoute(item, false, true))"
-								@click.prevent="this.$router.push(this.getRoute(item, false, true))"
+								:href="routeToHref(getRoute(item, false, true))"
+								@click.prevent="$router.push(getRoute(item, false, true))"
 							>
 								<v-icon color="black">
 									mdi-folder
@@ -190,7 +190,7 @@ export default {
 		}
 	},
 	methods: {
-		onClickitem(e) {
+		onClickItem(e) {
 			var r = this.getRoute(item);
 			if (!r.preview) {
 				this.$router.push(r);
