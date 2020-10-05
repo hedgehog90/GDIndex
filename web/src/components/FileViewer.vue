@@ -35,9 +35,8 @@
 						:key="item.id"
 						class="pl-0"
 						tag="a"
-						:href="getFileUrl(item)"
-						@click.prevent="goPath(item)"
-
+						:href="this.getItemUrl(item)"
+						@click="this.onClickItem"
 					>
 						<v-list-item-avatar class="ma-0">
 							<v-icon>{{ item.icon }}</v-icon>
@@ -55,7 +54,7 @@
 							<v-btn
 								icon
 								tag="a"
-								:href="getFileUrl(item)"
+								:href="this.routeToHref(this.getRoute(item, true))"
 								download
 								@click.stop
 							>
@@ -81,8 +80,8 @@
 							<v-btn
 								icon
 								tag="a"
-								:href="getFileUrl(item, true)"
-								@click.prevent="goPath(item, true)"
+								:href="this.routeToHref(this.getRoute(item, false, true))"
+								@click.prevent="this.$router.push(this.getRoute(item, false, true))"
 							>
 								<v-icon color="black">
 									mdi-folder
@@ -191,28 +190,44 @@ export default {
 		}
 	},
 	methods: {
-		getQuery(item, parent=null) {
+		onClickitem(e) {
+			var r = this.getRoute(item);
+			if (!r.preview) {
+				this.$router.push(r);
+				e.preventDefault();
+			}
+		},
+		//this.$router.
+		getItemUrl(item) {
+			var r = this.getRoute(item);
+			if (item.mimeType != FOLDER_MIME_TYPE && !r.preview) {
+				return "#";
+			}
+			return this.routeToHref(r);
+		},
+		//this.$router.
+		getRoute(item, download=false, parent=null) {
 			if (parent == null) parent = item.isParent;
-			var qs = {
+			var query = {
 				id: parent ? item.parents[0] : item.id
 			};
-			if (item.mimeType != FOLDER_MIME_TYPE && !parent) {
-				qs.view = 1;
+			if (item.mimeType.startsWith("video/") && !parent) {
+				query.preview = 1;
+			}
+			if (download) {
+				query.download = 1;
 			}
 			if (this.$route.query.rootId) {
-				qs.rootId = this.$route.query.rootId;
+				query.rootId = this.$route.query.rootId;
 			}
-			return qs;
+			return {
+				path:"/",
+				query:query
+			};
 		},
-		goPath(item, parent=null) {
-			this.$router.push({
-				path: "/",
-				query: this.getQuery(item, parent)
-			})
-		},
-		getFileUrl(item, parent=null) {
-			var url = new URL("/", window.props.api);
-			for (var [k,v] of Object.entries(this.getQuery(item, parent))) {
+		routeToHref(route) {
+			var url = new URL(route.path, window.props.api);
+			for (var [k,v] of Object.entries(route.query)) {
 				url.searchParams.set(k,v);
 			}
 			return url.href;
