@@ -192,7 +192,7 @@ export default {
 	methods: {
 		onClickItem(item, e) {
 			var r = this.getRoute(item);
-			if (!r.preview) {
+			if (!r.query.preview) {
 				this.$router.push(r);
 				e.preventDefault();
 			}
@@ -200,7 +200,7 @@ export default {
 		//this.$router.
 		getItemUrl(item) {
 			var r = this.getRoute(item);
-			if (item.mimeType != FOLDER_MIME_TYPE && !r.preview) {
+			if (item.mimeType != FOLDER_MIME_TYPE && !r.query.preview) {
 				return "#";
 			}
 			return this.routeToHref(r);
