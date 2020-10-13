@@ -192,6 +192,11 @@ export default {
 	methods: {
 		onClickItem(item, e) {
 			var r = this.getRoute(item);
+			if (item.mimeType != FOLDER_MIME_TYPE && !r.query.preview) {
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
 			if (!r.query.preview) {
 				this.$router.push(r);
 				e.preventDefault();
